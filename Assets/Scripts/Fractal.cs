@@ -34,40 +34,13 @@ public class Fractal : MonoBehaviour
     };
 
     private IEnumerator CreateChildren()
-    {
-        int directionsLength = 0;
-        directionsLength = childDirections.Length;
-
-        float[] k = new float[5] { 0.05f, 0.1f, 0.15f, 0.3f, 0.4f }; // decay rates
-        int[] x = new int[5] { 1, 4, 7, 10, 13 }; // depths
-        float m = 0.05f; // extra decay
-
-        float spawnSproutProbabilityLocal = spawnSproutProbability;
-        for (int i = 0; i < k.Length; i++)
-        {
-            if (depth <= x[i])
-            {
-                spawnSproutProbabilityLocal /= (1.0f + Mathf.Exp(-k[i] * (depth - x[i])));
-                break;
-            }
-        }
-        if (depth > x[4])
-        {
-            spawnSproutProbabilityLocal -= (depth - x[4]) * m;
-        }
-
-        // Shuffles directions except parent direction
-        for (int i = 1; i < directionsLength; i++)
-        {
-            int randomIndex = Random.Range(i, childDirections.Length);
-            Vector3 temp = childDirections[i];
-            childDirections[i] = childDirections[randomIndex];
-            childDirections[randomIndex] = temp;
-        }
+    {   
+        DecayProbability();
+        ShuffleArray(childDirections);
 
         float spawnBranchProbabilityLocal = (spawnBranchProbability * depth + 2) / 2;
 
-        for (int i = 0; i < directionsLength; i++)
+        for (int i = 0; i < childDirections.Length; i++)
         {
             if (Random.value < spawnSproutProbability && Random.value < spawnBranchProbabilityLocal)
             {
@@ -77,7 +50,6 @@ public class Fractal : MonoBehaviour
             }
         }
     }
-
 
     private void Start()
     {
@@ -141,5 +113,39 @@ public class Fractal : MonoBehaviour
         }
         materials[maxDepth, 0].color = Color.red;
         materials[maxDepth, 1].color = Color.red;
+    }
+
+    private void DecayProbability()
+    {
+        float spawnSproutProbabilityLocal = spawnSproutProbability;
+
+        float[] k = new float[5] { 0.05f, 0.1f, 0.15f, 0.3f, 0.4f }; // decay rates
+        int[] x = new int[5] { 1, 4, 7, 10, 13 }; // depths
+        float m = 0.05f; // extra decay
+
+        for (int i = 0; i < k.Length; i++)
+        {
+            if (depth <= x[i])
+            {
+                spawnSproutProbabilityLocal /= (1.0f + Mathf.Exp(-k[i] * (depth - x[i])));
+                break;
+            }
+        }
+        if (depth > x[4])
+        {
+            spawnSproutProbabilityLocal -= (depth - x[4]) * m;
+        }
+    }
+
+    private void ShuffleArray(Vector3[] array)
+    {
+        // Shuffles directions except parent direction
+        for (int i = 1; i < childDirections.Length; i++)
+        {
+            int randomIndex = Random.Range(i, childDirections.Length);
+            Vector3 temp = childDirections[i];
+            childDirections[i] = childDirections[randomIndex];
+            childDirections[randomIndex] = temp;
+        }
     }
 }
