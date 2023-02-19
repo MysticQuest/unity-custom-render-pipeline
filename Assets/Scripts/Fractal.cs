@@ -4,13 +4,18 @@ using System.Collections;
 public class Fractal : MonoBehaviour
 {
 
-    public Mesh mesh;
+    public Mesh[] meshes;
     public Material material;
     public int maxDepth;
     public float childScale;
+    public float spawnSproutProbability;
+    public float spawnBranchProbability = 1;
+    public float maxRotationSpeed;
+    public float maxRotationFactor;
 
     private int depth;
-    private Material[] materials;
+    private float rotationSpeed;
+    private Material[,] materials;
 
     private static Vector3[] childDirections = {
         Vector3.up,
@@ -18,7 +23,6 @@ public class Fractal : MonoBehaviour
         Vector3.left,
         Vector3.forward,
         Vector3.back,
-        Vector3.down
     };
 
     private static Quaternion[] childOrientations = {
@@ -27,41 +31,87 @@ public class Fractal : MonoBehaviour
         Quaternion.Euler(0f, 0f, 90),
         Quaternion.Euler(90, 0f, 0f),
         Quaternion.Euler(-90, 0f, 0f),
-        Quaternion.Euler(0f, 0f, -180f)
     };
 
     private IEnumerator CreateChildren()
     {
-        int directions = 0;
-        if (depth > 0) { directions = childDirections.Length - 1; }
-        else { directions = childDirections.Length; }
+        int directionsLength = 0;
+        directionsLength = childDirections.Length;
 
-        for (int i = 0; i < directions; i++)
+        float[] k = new float[5] { 0.05f, 0.1f, 0.15f, 0.3f, 0.4f }; // decay rates
+        int[] x = new int[5] { 1, 4, 7, 10, 13 }; // depths
+        float m = 0.05f; // extra decay
+
+        float spawnSproutProbabilityLocal = spawnSproutProbability;
+        for (int i = 0; i < k.Length; i++)
         {
-            yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
-            new GameObject("Fractal Child").AddComponent<Fractal>().
-                Initialize(this, i);
+            if (depth <= x[i])
+            {
+                spawnSproutProbabilityLocal /= (1.0f + Mathf.Exp(-k[i] * (depth - x[i])));
+                break;
+            }
+        }
+        if (depth > x[4])
+        {
+            spawnSproutProbabilityLocal -= (depth - x[4]) * m;
+        }
+
+        // Shuffles directions except parent direction
+        for (int i = 1; i < directionsLength; i++)
+        {
+            int randomIndex = Random.Range(i, childDirections.Length);
+            Vector3 temp = childDirections[i];
+            childDirections[i] = childDirections[randomIndex];
+            childDirections[randomIndex] = temp;
+        }
+
+        float spawnBranchProbabilityLocal = (spawnBranchProbability * depth + 2) / 2;
+
+        for (int i = 0; i < directionsLength; i++)
+        {
+            if (Random.value < spawnSproutProbability && Random.value < spawnBranchProbabilityLocal)
+            {
+                yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
+                new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+                spawnBranchProbabilityLocal *= (float)(.04f);
+            }
         }
     }
+
 
     private void Start()
     {
         if (materials == null)
         {
-            Debug.Log("initializing material array");
             InitializeMaterials();
         }
-        gameObject.AddComponent<MeshFilter>().mesh = mesh;
-        gameObject.AddComponent<MeshRenderer>().material = materials[depth];
+        rotationSpeed = Random.Range(depth * -maxRotationSpeed, maxRotationSpeed);
+        transform.Rotate(Random.Range(-maxRotationFactor, maxRotationFactor), 0f, 0f);
+        if (depth < maxDepth) 
+        {
+            gameObject.AddComponent<MeshFilter>().mesh = meshes[0];
+        }
+        else
+        {
+            gameObject.AddComponent<MeshFilter>().mesh = meshes[1];
+        }
+        
+        gameObject.AddComponent<MeshRenderer>().material = materials[depth, Random.Range(0, 2)];
         if (depth < maxDepth)
         {
             StartCoroutine(CreateChildren());
         }
     }
 
+    private void Update()
+    {
+        transform.Rotate(0f, rotationSpeed * Time.deltaTime, 0f);
+    }
+
+
     private void Initialize(Fractal parent, int childIndex)
     {
-        mesh = parent.mesh;
+        meshes = parent.meshes;
         materials = parent.materials;
         maxDepth = parent.maxDepth;
         depth = parent.depth + 1;
@@ -70,19 +120,26 @@ public class Fractal : MonoBehaviour
         transform.localScale = Vector3.one * childScale;
         transform.localPosition = childDirections[childIndex] * (0.5f + 0.5f * childScale);
         transform.localRotation = childOrientations[childIndex];
-    }
+        maxRotationSpeed = parent.maxRotationSpeed;
+        maxRotationFactor = parent.maxRotationFactor;
+        spawnSproutProbability = parent.spawnSproutProbability;
+}
 
 
     private void InitializeMaterials()
     {
-        materials = new Material[maxDepth + 1];
+        materials = new Material[maxDepth + 1, 2];
         for (int i = 0; i <= maxDepth; i++)
         {
             float t = i / (maxDepth - 1f);
             t *= t;
-            materials[i] = new Material(material);
-            materials[i].color = Color.Lerp(Color.white, Color.yellow, t);
+            
+            materials[i, 0] = new Material(material);
+            materials[i, 0].color = Color.Lerp(Color.gray, Color.yellow, t);
+            materials[i, 1] = new Material(material);
+            materials[i, 1].color = Color.Lerp(Color.gray, Color.green, t);
         }
-        materials[maxDepth].color = Color.magenta;
+        materials[maxDepth, 0].color = Color.red;
+        materials[maxDepth, 1].color = Color.red;
     }
 }
