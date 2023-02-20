@@ -6,6 +6,7 @@ partial class CameraRenderer
 {
     partial void DrawGizmos();
     partial void DrawUnsupportedShaders();
+    partial void PrepareForSceneWindow();
 
 #if UNITY_EDITOR
 
@@ -49,6 +50,14 @@ partial class CameraRenderer
         context.DrawRenderers(
             cullingResults, ref drawingSettings, ref filteringSettings
         );
+    }
+
+    partial void PrepareForSceneWindow()
+    {
+        if (camera.cameraType == CameraType.SceneView)
+        {
+            ScriptableRenderContext.EmitWorldGeometryForSceneView(camera);
+        }
     }
 #endif
 }
