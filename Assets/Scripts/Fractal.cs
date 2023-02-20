@@ -38,15 +38,23 @@ public class Fractal : MonoBehaviour
         DecayProbability();
         ShuffleArray(childDirections);
 
-        float spawnBranchProbabilityLocal = (spawnBranchProbability * depth + 2) / 2;
+        float spawnBranchProbabilityLocal = (spawnBranchProbability * depth * 2);
 
         for (int i = 0; i < childDirections.Length; i++)
         {
-            if (Random.value < spawnSproutProbability && Random.value < spawnBranchProbabilityLocal)
+            if (Random.value < spawnSproutProbability)
             {
                 yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
-                new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
-                spawnBranchProbabilityLocal *= (float)(.04f);
+                if (depth < 3) 
+                { 
+                    new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, 0);
+                    break;
+                }
+                else if (Random.value < spawnBranchProbabilityLocal)
+                {
+                    new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+                    spawnBranchProbabilityLocal *= (float)(.015f);
+                }
             }
         }
     }
