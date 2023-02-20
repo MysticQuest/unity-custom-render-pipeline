@@ -65,6 +65,10 @@ public class Fractal : MonoBehaviour
         {
             InitializeMaterials();
         }
+
+        GameObject gameobject = gameObject;
+        gameobject.layer = LayerMask.NameToLayer("InvalidObjects");
+
         rotationSpeed = Random.Range(depth * -maxRotationSpeed, maxRotationSpeed);
         transform.Rotate(Random.Range(-maxRotationFactor, maxRotationFactor), 0f, 0f);
         if (depth < maxDepth) 
