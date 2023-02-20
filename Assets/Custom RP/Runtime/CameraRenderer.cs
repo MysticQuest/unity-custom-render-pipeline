@@ -16,6 +16,15 @@ public class CameraRenderer
     CullingResults cullingResults;
     static ShaderTagId unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit");
 
+    static ShaderTagId[] legacyShaderTagIds = {
+        new ShaderTagId("Always"),
+        new ShaderTagId("ForwardBase"),
+        new ShaderTagId("PrepassBase"),
+        new ShaderTagId("Vertex"),
+        new ShaderTagId("VertexLMRGBM"),
+        new ShaderTagId("VertexLM")
+    };
+
     public void Render(ScriptableRenderContext context, Camera camera)
     {
         this.context = context;
@@ -25,6 +34,7 @@ public class CameraRenderer
 
         Setup();
         DrawVisibleGeometry();
+        DrawUnsupportedShaders();
         Submit();
     }
 
@@ -38,6 +48,7 @@ public class CameraRenderer
 
     void DrawVisibleGeometry()
     {
+        // Draws opaque objects
         var sortingSettings = new SortingSettings(camera)
         {
             criteria = SortingCriteria.CommonOpaque
@@ -46,16 +57,32 @@ public class CameraRenderer
             unlitShaderTagId, sortingSettings
         );
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
-
         context.DrawRenderers(
             cullingResults, ref drawingSettings, ref filteringSettings
         );
+
+        // Draws the skybox
         context.DrawSkybox(camera);
 
+        // Draws transparent objects after changing queue and filter
         sortingSettings.criteria = SortingCriteria.CommonTransparent;
         drawingSettings.sortingSettings = sortingSettings;
         filteringSettings.renderQueueRange = RenderQueueRange.transparent;
+        context.DrawRenderers(
+            cullingResults, ref drawingSettings, ref filteringSettings
+        );
+    }
 
+    void DrawUnsupportedShaders()
+    {
+        var drawingSettings = new DrawingSettings(
+            legacyShaderTagIds[0], new SortingSettings(camera)
+        );
+        for (int i = 1; i < legacyShaderTagIds.Length; i++)
+        {
+            drawingSettings.SetShaderPassName(i, legacyShaderTagIds[i]);
+        }
+        var filteringSettings = FilteringSettings.defaultValue;
         context.DrawRenderers(
             cullingResults, ref drawingSettings, ref filteringSettings
         );
