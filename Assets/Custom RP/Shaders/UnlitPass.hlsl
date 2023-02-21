@@ -11,7 +11,7 @@ float4 UnlitPassVertex(float3 positionOS : POSITION) : SV_POSITION
 
 float4 UnlitPassFragment () : SV_TARGET
 {
-	return 0.0;
+    return float4(1.0, 1.0, 0.0, 1.0);
 }
 
 #endif

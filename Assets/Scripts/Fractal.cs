@@ -67,7 +67,7 @@ public class Fractal : MonoBehaviour
         }
 
         GameObject gameobject = gameObject;
-        gameobject.layer = LayerMask.NameToLayer("InvalidObjects");
+        gameobject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
         rotationSpeed = Random.Range(depth * -maxRotationSpeed, maxRotationSpeed);
         transform.Rotate(Random.Range(-maxRotationFactor, maxRotationFactor), 0f, 0f);
