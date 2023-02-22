@@ -46,7 +46,7 @@ public partial class CameraRenderer
         ExecuteBuffer();
     }
 
-    void DrawVisibleGeometry()
+    void DrawVisibleGeometry(bool useDynamicBatching, bool useGPUInstancing)
     {
         // Draws opaque objects
         var sortingSettings = new SortingSettings(camera)
@@ -55,7 +55,11 @@ public partial class CameraRenderer
         };
         var drawingSettings = new DrawingSettings(
             unlitShaderTagId, sortingSettings
-        );
+        )
+        {
+            enableDynamicBatching = useDynamicBatching,
+            enableInstancing = useGPUInstancing
+        };
         var filteringSettings = new FilteringSettings(RenderQueueRange.opaque);
         context.DrawRenderers(
             cullingResults, ref drawingSettings, ref filteringSettings
