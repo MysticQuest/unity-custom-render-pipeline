@@ -18,11 +18,12 @@ public class MeshBall : MonoBehaviour
     {
         for (int i = 0; i < matrices.Length; i++)
         {
+            Vector3 center = transform.position;
             matrices[i] = Matrix4x4.TRS(
-                Random.insideUnitSphere * 10f, Quaternion.identity, Vector3.one
-            );
-            baseColors[i] =
-                new Vector4(Random.value, Random.value, Random.value, 1f);
+                             Random.insideUnitSphere * 10f + center,
+                             Quaternion.Euler(Random.value * 360f, Random.value * 360f, Random.value * 360f), Vector3.one * Random.Range(0.5f, 1.5f));
+            
+            baseColors[i] = new Vector4(Random.value, Random.value, Random.value, Random.Range(0.5f, 1f));
         }
     }
 
