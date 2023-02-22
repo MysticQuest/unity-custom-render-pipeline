@@ -355,7 +355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
-  material: {fileID: 2100000, guid: d453d059d4419f746b472cfafd414e24, type: 2}
+  material: {fileID: 2100000, guid: 74a1c38d9ab00544fbb59d8ef1f50a18, type: 2}
 --- !u!4 &144561611
 Transform:
   m_ObjectHideFlags: 0
@@ -363,9 +363,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144561609}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.4630604, y: 4.1675487, z: -0.25003126}
-  m_LocalScale: {x: 0.09989221, y: 1, z: 0.10083921}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 223974227}
   m_RootOrder: 6
@@ -503,7 +503,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 352186884}
-  - component: {fileID: 352186889}
   - component: {fileID: 352186887}
   - component: {fileID: 352186886}
   - component: {fileID: 352186885}
@@ -604,19 +603,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &352186889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 352186883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 648f4f89bfb777946960773e268e778a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseColor: {r: 0.7254104, g: 0.9056604, b: 0.32894266, a: 1}
 --- !u!1 &472149962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1070,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782628375}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.4398, y: 1.207, z: -0.1462}
+  m_LocalPosition: {x: -0.4776, y: 1.207, z: 0.0422}
   m_LocalScale: {x: 0.09989221, y: 1, z: 0.10083921}
   m_Children: []
   m_Father: {fileID: 223974227}
@@ -1177,7 +1163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648f4f89bfb777946960773e268e778a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseColor: {r: 0.2783019, g: 0.81561935, b: 1, a: 1}
+  baseColor: {r: 0, g: 0.6423671, b: 1, a: 1}
 --- !u!1 &805285679
 GameObject:
   m_ObjectHideFlags: 0
@@ -1996,7 +1982,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456924218}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.39849997, y: 0.97300005, z: -0.29240003}
+  m_LocalPosition: {x: -0.459, y: 0.97300005, z: -0.2728}
   m_LocalScale: {x: 0.09989221, y: 1, z: 0.10083921}
   m_Children: []
   m_Father: {fileID: 1446751442}
@@ -2086,7 +2072,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1474646634}
-  - component: {fileID: 1474646639}
   - component: {fileID: 1474646637}
   - component: {fileID: 1474646636}
   - component: {fileID: 1474646635}
@@ -2187,19 +2172,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1474646639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1474646633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 648f4f89bfb777946960773e268e778a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseColor: {r: 0.7254104, g: 0.9056604, b: 0.32894266, a: 1}
 --- !u!1 &1604781801
 GameObject:
   m_ObjectHideFlags: 0
@@ -2302,7 +2274,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1648716563}
-  - component: {fileID: 1648716568}
   - component: {fileID: 1648716566}
   - component: {fileID: 1648716565}
   - component: {fileID: 1648716564}
@@ -2403,19 +2374,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1648716568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1648716562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 648f4f89bfb777946960773e268e778a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  baseColor: {r: 0.7254104, g: 0.9056604, b: 0.32894266, a: 1}
 --- !u!1 &1695865335
 GameObject:
   m_ObjectHideFlags: 0
