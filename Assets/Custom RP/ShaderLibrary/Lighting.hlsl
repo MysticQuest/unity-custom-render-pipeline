@@ -13,7 +13,7 @@ float3 GetLighting(Surface surface, Light light)
 
 float3 GetLighting(Surface surface)
 {
-    return surface.normal.y * surface.color;
+    return GetLighting(surface, GetDirectionalLight());
 }
 
 #endif
