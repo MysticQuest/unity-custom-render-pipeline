@@ -1,3 +1,4 @@
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -14,20 +15,20 @@ public class Lighting
         name = bufferName
     };
 
-    public void Setup(ScriptableRenderContext context)
+    CullingResults cullingResults;
+
+    public void Setup(ScriptableRenderContext context, CullingResults cullingResults)
     {
+        this.cullingResults = cullingResults;
         buffer.BeginSample(bufferName);
-        SetupDirectionalLight();
+        SetupLights();
         buffer.EndSample(bufferName);
         context.ExecuteCommandBuffer(buffer);
         buffer.Clear();
     }
 
-    void SetupDirectionalLight()
+    void SetupLights()
     {
-        Light light = RenderSettings.sun;
-        buffer.SetGlobalVector(dirLightColorId, light.color.linear);
-        buffer.SetGlobalVector(dirLightDirectionId, -light.transform.forward);
-        buffer.SetGlobalVector(dirLightColorId, light.color.linear * light.intensity);
+        NativeArray<VisibleLight> visibleLights = cullingResults.visibleLights;
     }
 }
