@@ -78,8 +78,21 @@ public class CustomShaderGUI : ShaderGUI
 
     void SetProperty(string name, string keyword, bool value)
     {
-        SetProperty(name, value ? 1f : 0f);
-        SetKeyword(keyword, value);
+        if (ShouldSetProperty(name, value ? 1f : 0f))
+        {
+            SetKeyword(keyword, value);
+        }
+    }
+
+    bool ShouldSetProperty(string name, float value)
+    {
+        MaterialProperty property = FindProperty(name, properties, false);
+        if (property != null)
+        {
+            property.floatValue = value;
+            return true;
+        }
+        return false;
     }
 
     RenderQueue RenderQueue
