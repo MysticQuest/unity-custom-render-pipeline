@@ -20,7 +20,7 @@ BRDF GetBRDF(Surface surface)
     BRDF brdf;
     float oneMinusReflectivity = OneMinusReflectivity(surface.metallic);
     brdf.diffuse = surface.color * oneMinusReflectivity;
-    brdf.specular = 0.0;
+    brdf.specular = lerp(MIN_REFLECTIVITY, surface.color, surface.metallic);
     brdf.roughness = 1.0;
     return brdf;
 }
