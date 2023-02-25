@@ -23,11 +23,14 @@ public class Lighting
 
     CullingResults cullingResults;
 
+    Shadows shadows = new Shadows();
+
     public void Setup(ScriptableRenderContext context, CullingResults cullingResults,
         ShadowSettings shadowSettings)
     {
         this.cullingResults = cullingResults;
         buffer.BeginSample(bufferName);
+        shadows.Setup(context, cullingResults, shadowSettings);
         SetupLights();
         buffer.EndSample(bufferName);
         context.ExecuteCommandBuffer(buffer);
