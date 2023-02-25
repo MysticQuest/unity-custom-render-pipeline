@@ -58,6 +58,13 @@ public class Shadows
         {
             RenderDirectionalShadows();
         }
+        else
+        {
+            buffer.GetTemporaryRT(
+                dirShadowAtlasId, 1, 1,
+                32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap
+            );
+        }
     }
 
     void RenderDirectionalShadows()
@@ -65,6 +72,12 @@ public class Shadows
         int atlasSize = (int)settings.directional.atlasSize;
         buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize,
             32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+        buffer.SetRenderTarget(
+            dirShadowAtlasId,
+            RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
+        );
+        buffer.ClearRenderTarget(true, false, Color.clear);
+        ExecuteBuffer();
     }
 
     public void Cleanup()
