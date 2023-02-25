@@ -77,7 +77,31 @@ public class Shadows
             RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
         );
         buffer.ClearRenderTarget(true, false, Color.clear);
+        buffer.BeginSample(bufferName);
         ExecuteBuffer();
+
+        for (int i = 0; i < ShadowedDirectionalLightCount; i++)
+        {
+            RenderDirectionalShadows(i, atlasSize);
+        }
+
+        buffer.EndSample(bufferName);
+        ExecuteBuffer();
+    }
+
+    void RenderDirectionalShadows(int index, int tileSize)
+    {
+        ShadowedDirectionalLight light = ShadowedDirectionalLights[index];
+        var shadowSettings = new ShadowDrawingSettings(cullingResults, light.visibleLightIndex);
+        cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
+            light.visibleLightIndex, 0, 1, Vector3.zero, tileSize, 0f,
+            out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix,
+            out ShadowSplitData splitData
+        );
+        shadowSettings.splitData = splitData;
+        buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
+        ExecuteBuffer();
+        context.DrawShadows(ref shadowSettings);
     }
 
     public void Cleanup()
