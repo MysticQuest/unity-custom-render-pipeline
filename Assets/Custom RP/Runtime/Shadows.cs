@@ -52,6 +52,16 @@ public class Shadows
         }
     }
 
+    public void Render()
+    {
+        if (ShadowedDirectionalLightCount > 0)
+        {
+            RenderDirectionalShadows();
+        }
+    }
+
+    void RenderDirectionalShadows() { }
+
     void ExecuteBuffer()
     {
         context.ExecuteCommandBuffer(buffer);
