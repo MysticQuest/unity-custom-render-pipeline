@@ -13,10 +13,10 @@ public class Shadows
     };
 
     ScriptableRenderContext context;
-
     CullingResults cullingResults;
-
     ShadowSettings settings;
+
+    static int dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas");
 
     struct ShadowedDirectionalLight
     {
@@ -60,7 +60,18 @@ public class Shadows
         }
     }
 
-    void RenderDirectionalShadows() { }
+    void RenderDirectionalShadows()
+    {
+        int atlasSize = (int)settings.directional.atlasSize;
+        buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize,
+            32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+    }
+
+    public void Cleanup()
+    {
+        buffer.ReleaseTemporaryRT(dirShadowAtlasId);
+        ExecuteBuffer();
+    }
 
     void ExecuteBuffer()
     {

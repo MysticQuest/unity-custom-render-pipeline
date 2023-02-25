@@ -70,4 +70,9 @@ public class Lighting
         dirLightDirections[index] = -visibleLight.localToWorldMatrix.GetColumn(2);
         shadows.ReserveDirectionalShadows(visibleLight.light, index);
     }
+
+    public void Cleanup()
+    {
+        shadows.Cleanup();
+    }
 }
