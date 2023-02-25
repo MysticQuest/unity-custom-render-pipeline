@@ -10,9 +10,20 @@ public class MeshGrid : MonoBehaviour
     private Vector3[] vertices;
     private Mesh mesh;
 
-    private void Awake()
+    private bool validated = false;
+
+    private void Update()
     {
-        Generate();
+        if (validated)
+        {
+            Generate();
+            validated = false;
+        }
+    }
+
+    void OnValidate()
+    {
+        validated = true;
     }
 
     private void Generate()
