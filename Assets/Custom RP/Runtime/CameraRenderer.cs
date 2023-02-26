@@ -1,25 +1,33 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using static UnityScript.UnityScriptCompiler;
 
 public partial class CameraRenderer
 {
-
+    // Class in Unity that provides a way to interact with the rendering pipeline
     ScriptableRenderContext context;
     Camera camera;
 
     const string bufferName = "Render Camera";
+
+    // Low-level API that issues (ideally) grouped commands to the GPU
     CommandBuffer buffer = new CommandBuffer
     {
         name = bufferName
     };
 
+    // Calculates bounds of visible objects respective to the camera view
     CullingResults cullingResults;
+
+    // Tags for the HSLS/Shader files.
     static ShaderTagId 
     unlitShaderTagId = new ShaderTagId("SRPDefaultUnlit"),
     litShaderTagId = new ShaderTagId("CustomLit");
 
+    // Class that handles light calculation
     Lighting lighting = new Lighting();
 
+    // Sends the main rendering tasks to the GPU in a buffer.
     public void Render(ScriptableRenderContext context, Camera camera,
         bool useDynamicBatching, bool useGPUInstancing, ShadowSettings shadowSettings)
     {
@@ -56,6 +64,7 @@ public partial class CameraRenderer
         ExecuteBuffer();
     }
 
+    // Draws objects with their specific sorting/filtering/drawing settings
     void DrawVisibleGeometry(bool useDynamicBatching, bool useGPUInstancing)
     {
         // Draws opaque objects
@@ -102,6 +111,7 @@ public partial class CameraRenderer
         buffer.Clear();
     }
 
+    // Doesn't render shadows above a max distance
     bool Cull(float maxShadowDistance)
     {
         if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
