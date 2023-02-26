@@ -9,8 +9,22 @@ TEXTURE2D_SHADOW(_DirectionalShadowAtlas);
 SAMPLER_CMP(SHADOW_SAMPLER);
 
 CBUFFER_START(_CustomShadows)
+int _CascadeCount;
+float4 _CascadeCullingSpheres[MAX_CASCADE_COUNT];
 float4x4 _DirectionalShadowMatrices[MAX_SHADOWED_DIRECTIONAL_LIGHT_COUNT * MAX_CASCADE_COUNT];
 CBUFFER_END
+
+struct ShadowData
+{
+    int cascadeIndex;
+};
+
+ShadowData GetShadowData(Surface surfaceWS)
+{
+    ShadowData data;
+    data.cascadeIndex = 0;
+    return data;
+}
 
 struct DirectionalShadowData
 {
