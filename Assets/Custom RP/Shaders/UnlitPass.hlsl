@@ -26,6 +26,7 @@ struct Varyings
 	UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
+// Transforms mesh vertices from object space to screen space and passes them to the fragment shader
 Varyings UnlitPassVertex(Attributes input)
 {
     Varyings output;
@@ -38,6 +39,7 @@ Varyings UnlitPassVertex(Attributes input)
     return output;
 }
 
+// Adds color and other properties in each pixel of the material
 float4 UnlitPassFragment(Varyings input) : SV_TARGET
 {
     UNITY_SETUP_INSTANCE_ID(input);

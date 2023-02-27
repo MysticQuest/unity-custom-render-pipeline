@@ -2,6 +2,10 @@
 #define CUSTOM_BRDF_INCLUDED
 #define MIN_REFLECTIVITY 0.04
 
+// BRDF helps to determine how much light is reflected from a surface at a given point in a specific direction. 
+// It takes into account the angle of incidence of the light, the angle of reflection, and the properties of the
+// surface such as its roughness, glossiness, and color.
+
 struct BRDF
 {
     float3 diffuse;

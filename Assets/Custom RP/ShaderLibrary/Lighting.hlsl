@@ -1,6 +1,7 @@
 #ifndef CUSTOM_LIGHTING_INCLUDED
 #define CUSTOM_LIGHTING_INCLUDED
 
+// Calculates light on surface
 float3 IncomingLight(Surface surface, Light light)
 {
     return

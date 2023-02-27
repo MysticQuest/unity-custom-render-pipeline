@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
 
+// Editor-only tasks of the CameraRenderer class
 partial class CameraRenderer
 {
     partial void DrawGizmos();
@@ -55,6 +56,7 @@ partial class CameraRenderer
         );
     }
 
+    // Adds UI to the world geometry when rendering in the scene window
     partial void PrepareForSceneWindow()
     {
         if (camera.cameraType == CameraType.SceneView)

@@ -10,7 +10,7 @@ public partial class CameraRenderer
 
     const string bufferName = "Render Camera";
 
-    // Low-level API that issues (ideally) grouped commands to the GPU
+    // Low-level API that issues grouped commands to the GPU
     CommandBuffer buffer = new CommandBuffer
     {
         name = bufferName
@@ -52,6 +52,7 @@ public partial class CameraRenderer
 
     void Setup()
     {
+        // Clears buffer of a camera so that its rendering doesn't affect the other
         context.SetupCameraProperties(camera);
         CameraClearFlags flags = camera.clearFlags;
         buffer.ClearRenderTarget(

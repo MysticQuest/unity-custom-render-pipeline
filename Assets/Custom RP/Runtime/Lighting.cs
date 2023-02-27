@@ -27,6 +27,7 @@ public class Lighting
 
     Shadows shadows = new Shadows();
 
+    // Sends lighting data to the GPU in a dedicated command buffer
     public void Setup(ScriptableRenderContext context, CullingResults cullingResults,
         ShadowSettings shadowSettings)
     {
@@ -42,6 +43,7 @@ public class Lighting
 
     void SetupLights()
     {
+        // Native memory buffer to get data between engine code and our scripts
         NativeArray<VisibleLight> visibleLights = cullingResults.visibleLights;
         int dirLightCount = 0;
         for (int i = 0; i < visibleLights.Length; i++)
