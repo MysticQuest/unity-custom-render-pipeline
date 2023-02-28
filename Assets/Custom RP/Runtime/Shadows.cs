@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 
+// Class to render shadows with a dedicated command buffer.
+// Its setup/render/cleanup functions are called by the Lighting class.
 public class Shadows
 {
 
@@ -22,6 +24,7 @@ public class Shadows
         cascadeCountId = Shader.PropertyToID("_CascadeCount"),
         cascadeCullingSpheresId = Shader.PropertyToID("_CascadeCullingSpheres");
 
+    // Culling spheres accommodate each cascade
     static Vector4[] cascadeCullingSpheres = new Vector4[maxCascades];
     static Matrix4x4[]
         dirShadowMatrices = new Matrix4x4[maxShadowedDirectionalLightCount * maxCascades];
@@ -46,6 +49,9 @@ public class Shadows
         ShadowedDirectionalLightCount = 0;
     }
 
+    // Reserves space for each light's shadow map (up to maxShadowedDirectionalLightCount)
+    // Ignores lights that are set not to cast shadows,
+    // or shadow casters beyond ShadowSettings.maxDistance
     public Vector2 ReserveDirectionalShadows(Light light, int visibleLightIndex)
     {
         if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
@@ -74,6 +80,7 @@ public class Shadows
         }
         else
         {
+            // Reserves a dummy texture anyway, when shadows are not needed
             buffer.GetTemporaryRT(
                 dirShadowAtlasId, 1, 1,
                 32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap
@@ -84,8 +91,11 @@ public class Shadows
     void RenderDirectionalShadows()
     {
         int atlasSize = (int)settings.directional.atlasSize;
+
+        // Reserves a texture to draw the shadow maps on, and releases it in Cleanup()
         buffer.GetTemporaryRT(dirShadowAtlasId, atlasSize, atlasSize,
             32, FilterMode.Bilinear, RenderTextureFormat.Shadowmap);
+        // Temporarily makes the texture the render target and then clears it
         buffer.SetRenderTarget(
             dirShadowAtlasId,
             RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store
@@ -94,6 +104,8 @@ public class Shadows
         buffer.BeginSample(bufferName);
         ExecuteBuffer();
 
+        // Each light needs to have its own tile to render separately in the shadow atlas
+        // If cascades are used each cascade gets its own tile
         int tiles = ShadowedDirectionalLightCount * settings.directional.cascadeCount;
         int split = tiles <= 1 ? 1 : tiles <= 4 ? 2 : 4;
         int tileSize = atlasSize / split;
@@ -103,6 +115,7 @@ public class Shadows
             RenderDirectionalShadows(i, split, tileSize);
         }
 
+        // Used to set global shader properties in a CommandBuffer instance
         buffer.SetGlobalInt(cascadeCountId, settings.directional.cascadeCount);
         buffer.SetGlobalVectorArray(
             cascadeCullingSpheresId, cascadeCullingSpheres
@@ -112,6 +125,7 @@ public class Shadows
         ExecuteBuffer();
     }
 
+    // Renders shadows for a single light
     void RenderDirectionalShadows(int index, int split, int tileSize)
     {
         ShadowedDirectionalLight light = ShadowedDirectionalLights[index];
@@ -123,11 +137,15 @@ public class Shadows
 
         for (int i = 0; i < cascadeCount; i++)
         {
+            // For each light's cascade,
+            // calculates the view and projection matrices of a light and gives us a clip space cube
+            // that overlaps the area visible to the camera
             cullingResults.ComputeDirectionalShadowMatricesAndCullingPrimitives(
                 light.visibleLightIndex, i, cascadeCount, ratios, tileSize, 0f,
                 out Matrix4x4 viewMatrix, out Matrix4x4 projectionMatrix,
                 out ShadowSplitData splitData
             );
+            // splitData contains information about how shadow casters should be culled
             shadowSettings.splitData = splitData;
             if (index == 0)
             {
@@ -146,12 +164,17 @@ public class Shadows
         }
     }
 
+    // Calculates offset for each tile in the shadow atlas
     Vector2 SetTileViewport(int index, int split, float tileSize)
     {
         Vector2 offset = new Vector2(index % split, index / split);
         buffer.SetViewport(new Rect(offset.x * tileSize, offset.y * tileSize, tileSize, tileSize));
         return offset;
     }
+
+    // Gets each light's projectiion * view matrix in the world space, the light's tile offset,
+    // and the splitting of the shadow atlas.
+    // This is converted to shadow atlas space (which can be seen in the frame debugger)
 
     Matrix4x4 ConvertToAtlasMatrix(Matrix4x4 m, Vector2 offset, int split)
     {

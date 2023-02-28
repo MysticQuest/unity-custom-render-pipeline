@@ -48,6 +48,7 @@ struct DirectionalShadowData
     int tileIndex;
 };
 
+// Samples the shadow atlas for the depth information
 float SampleDirectionalShadowAtlas(float3 positionSTS)
 {
     return SAMPLE_TEXTURE2D_SHADOW(
@@ -55,6 +56,7 @@ float SampleDirectionalShadowAtlas(float3 positionSTS)
 	);
 }
 
+// Returns a shadow attenuation factor after sampling a shadow atlas tile
 float GetDirectionalShadowAttenuation(DirectionalShadowData data, Surface surfaceWS)
 {
     if (data.strength <= 0.0)

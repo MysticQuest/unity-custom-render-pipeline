@@ -63,6 +63,7 @@ public class Lighting
             }
         }
 
+        // Used to set global shader properties in a CommandBuffer instance
         buffer.SetGlobalInt(dirLightCountId, visibleLights.Length);
         buffer.SetGlobalVectorArray(dirLightColorsId, dirLightColors);
         buffer.SetGlobalVectorArray(dirLightDirectionsId, dirLightDirections);

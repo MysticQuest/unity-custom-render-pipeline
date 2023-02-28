@@ -3,10 +3,15 @@
 [System.Serializable]
 public class ShadowSettings
 {
+    // Shadow settings to be added to the CRP asset's constructor
 
+    // Passed to the CameraRenderer Cull function
     [Min(0f)]
     public float maxDistance = 100f;
 
+    // The shadow map texture size.
+    // Each light generates a texture with depth information from its own viewpoint.
+    // This information is then passed to the shaders to determine whether a pixel is in shadow.
     public enum MapSize
     {
         _256 = 256, _512 = 512, _1024 = 1024,
@@ -27,7 +32,8 @@ public class ShadowSettings
         public Vector3 CascadeRatios =>
         new Vector3(cascadeRatio1, cascadeRatio2, cascadeRatio3);
     }
-
+    
+    // Renders areas (cascades) further away from the camera with a lower resolution
     public Directional directional = new Directional
     {
         atlasSize = MapSize._1024,
