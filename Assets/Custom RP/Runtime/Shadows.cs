@@ -1,3 +1,4 @@
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -52,24 +53,24 @@ public class Shadows
     // Reserves space for each light's shadow map (up to maxShadowedDirectionalLightCount)
     // Ignores lights that are set not to cast shadows,
     // or shadow casters beyond ShadowSettings.maxDistance
-    public Vector2 ReserveDirectionalShadows(Light light, int visibleLightIndex)
+    public Vector3 ReserveDirectionalShadows(Light light, int visibleLightIndex)
     {
         if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
             light.shadows != LightShadows.None && light.shadowStrength > 0f &&
             cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b))
-        {
-            ShadowedDirectionalLights[ShadowedDirectionalLightCount++] =
-                new ShadowedDirectionalLight
-                {
-                    visibleLightIndex = visibleLightIndex
-                };
-            return new Vector2
-                (
-                light.shadowStrength, 
-                settings.directional.cascadeCount * ShadowedDirectionalLightCount++
+            {
+                ShadowedDirectionalLights[ShadowedDirectionalLightCount] =
+                    new ShadowedDirectionalLight
+                    {
+                        visibleLightIndex = visibleLightIndex,
+                    };
+                return new Vector3 (
+                    light.shadowStrength,
+                    settings.directional.cascadeCount * ShadowedDirectionalLightCount++,
+                    light.shadowNormalBias
                 );
-        }
-        return Vector2.zero;
+            }
+        return Vector3.zero;
     }
 
     public void Render()
@@ -109,6 +110,10 @@ public class Shadows
         int tiles = ShadowedDirectionalLightCount * settings.directional.cascadeCount;
         int split = tiles <= 1 ? 1 : tiles <= 4 ? 2 : 4;
         int tileSize = atlasSize / split;
+
+        //Debug.Log($"lightcount: {ShadowedDirectionalLightCount}");
+        //Debug.Log($"tiles: {tiles}");
+        //Debug.Log($"split: {split}");
 
         for (int i = 0; i < ShadowedDirectionalLightCount; i++)
         {
