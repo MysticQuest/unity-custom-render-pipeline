@@ -38,6 +38,7 @@ public class Shadows
     struct ShadowedDirectionalLight
     {
         public int visibleLightIndex;
+        public float slopeScaleBias;
     }
 
     ShadowedDirectionalLight[] ShadowedDirectionalLights =
@@ -68,6 +69,7 @@ public class Shadows
                     new ShadowedDirectionalLight
                     {
                         visibleLightIndex = visibleLightIndex,
+                        slopeScaleBias = light.shadowBias
                     };
                 return new Vector3 (
                     light.shadowStrength,
@@ -171,8 +173,10 @@ public class Shadows
                 SetTileViewport(tileIndex, split, tileSize), split
             );
             buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
+            buffer.SetGlobalDepthBias(0f, light.slopeScaleBias);
             ExecuteBuffer();
             context.DrawShadows(ref shadowSettings);
+            buffer.SetGlobalDepthBias(0f, 0f);
         }
     }
 
