@@ -2554,7 +2554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 144561609}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.863, y: 7.44, z: -2.025}
+  m_LocalPosition: {x: 1.019, y: 11, z: 1.657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 223974227}
@@ -3929,7 +3929,7 @@ GameObject:
   m_Component:
   - component: {fileID: 223974227}
   m_Layer: 2
-  m_Name: CRPMaterials
+  m_Name: Old scene objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30569,8 +30569,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20.350111, y: 20.318533, z: 0.51116866}
-  m_Center: {x: 10.165936, y: 10.057658, z: 0.24441567}
+  m_Size: {x: 100.16678, y: 100.100975, z: 0.51116866}
+  m_Center: {x: 50.074265, y: 49.94888, z: 0.24441567}
 --- !u!1 &1605312698
 GameObject:
   m_ObjectHideFlags: 0
