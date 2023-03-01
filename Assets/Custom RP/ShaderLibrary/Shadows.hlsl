@@ -23,7 +23,7 @@ struct ShadowData
 ShadowData GetShadowData(Surface surfaceWS)
 {
     ShadowData data;
-    data.strength = 1.0;
+    data.strength = surfaceWS.depth < _ShadowDistance ? 1.0 : 0.0;
     int i;
     for (i = 0; i < _CascadeCount; i++)
     {

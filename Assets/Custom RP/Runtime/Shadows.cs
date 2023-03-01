@@ -23,7 +23,8 @@ public class Shadows
         dirShadowAtlasId = Shader.PropertyToID("_DirectionalShadowAtlas"),
         dirShadowMatricesId = Shader.PropertyToID("_DirectionalShadowMatrices"),
         cascadeCountId = Shader.PropertyToID("_CascadeCount"),
-        cascadeCullingSpheresId = Shader.PropertyToID("_CascadeCullingSpheres");
+        cascadeCullingSpheresId = Shader.PropertyToID("_CascadeCullingSpheres"),
+        shadowDistanceId = Shader.PropertyToID("_ShadowDistance");
 
     // Culling spheres accommodate each cascade
     static Vector4[] cascadeCullingSpheres = new Vector4[maxCascades];
@@ -111,10 +112,6 @@ public class Shadows
         int split = tiles <= 1 ? 1 : tiles <= 4 ? 2 : 4;
         int tileSize = atlasSize / split;
 
-        //Debug.Log($"lightcount: {ShadowedDirectionalLightCount}");
-        //Debug.Log($"tiles: {tiles}");
-        //Debug.Log($"split: {split}");
-
         for (int i = 0; i < ShadowedDirectionalLightCount; i++)
         {
             RenderDirectionalShadows(i, split, tileSize);
@@ -126,6 +123,7 @@ public class Shadows
             cascadeCullingSpheresId, cascadeCullingSpheres
         );
         buffer.SetGlobalMatrixArray(dirShadowMatricesId, dirShadowMatrices);
+        buffer.SetGlobalFloat(shadowDistanceId, settings.maxDistance);
         buffer.EndSample(bufferName);
         ExecuteBuffer();
     }

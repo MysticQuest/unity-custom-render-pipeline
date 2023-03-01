@@ -42,12 +42,12 @@ public partial class CameraRenderer
         ExecuteBuffer();
         lighting.Setup(context, cullingResults, shadowSettings);
         buffer.EndSample(SampleName);
-        Setup();
+        Setup(); // Also starts a buffer
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
         DrawUnsupportedShaders();
         DrawGizmos();
         lighting.Cleanup();
-        Submit();
+        Submit(); // Also executes the buffer
     }
 
     void Setup()
