@@ -6,8 +6,11 @@ public class ShadowSettings
     // Shadow settings to be added to the CRP asset's constructor
 
     // Passed to the CameraRenderer Cull function
-    [Min(0f)]
+    [Min(0.001f)]
     public float maxDistance = 100f;
+
+    [Range(0.001f, 1f)]
+    public float distanceFade = 0.1f;
 
     // The shadow map texture size.
     // Each light generates a texture with depth information from its own viewpoint.
