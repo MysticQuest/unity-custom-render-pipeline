@@ -123,9 +123,12 @@ public class Shadows
             cascadeCullingSpheresId, cascadeCullingSpheres
         );
         buffer.SetGlobalMatrixArray(dirShadowMatricesId, dirShadowMatrices);
+        float f = 1f - settings.directional.cascadeFade;
         buffer.SetGlobalVector(
-            shadowDistanceFadeId,
-            new Vector4(1f / settings.maxDistance, 1f / settings.distanceFade)
+            shadowDistanceFadeId, new Vector4(
+                1f / settings.maxDistance, 1f / settings.distanceFade,
+                1f / (1f - f * f)
+            )
         );
         buffer.EndSample(bufferName);
         ExecuteBuffer();
