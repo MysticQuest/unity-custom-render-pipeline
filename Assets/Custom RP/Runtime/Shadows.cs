@@ -168,8 +168,10 @@ public class Shadows
                 SetTileViewport(tileIndex, split, tileSize), split
             );
             buffer.SetViewProjectionMatrices(viewMatrix, projectionMatrix);
+            buffer.SetGlobalDepthBias(500000f, 0f);
             ExecuteBuffer();
             context.DrawShadows(ref shadowSettings);
+            buffer.SetGlobalDepthBias(0f, 0f);
         }
     }
 
