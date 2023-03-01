@@ -213,11 +213,18 @@ public class Shadows
         return m;
     }
 
+    // Each cascade/cullingsphere has a different texel size (e.g. further ones are larger).
+    // This attempts to correct misalignment between texels (shadow atlas pixels)
+    // that can be much larger than fragments (pixels in world view) causing shadow artifacts.
     void SetCascadeData(int index, Vector4 cullingSphere, float tileSize)
     {
-        cascadeData[index].x = 1f / cullingSphere.w;
+        float texelSize = 2f * cullingSphere.w / tileSize;
         cullingSphere.w *= cullingSphere.w;
         cascadeCullingSpheres[index] = cullingSphere;
+        cascadeData[index] = new Vector4(
+            1f / cullingSphere.w,
+            texelSize * 1.4142136f
+        );
     }
 
     public void Cleanup()
