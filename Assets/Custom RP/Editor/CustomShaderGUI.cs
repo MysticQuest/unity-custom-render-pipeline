@@ -36,6 +36,23 @@ public class CustomShaderGUI : ShaderGUI
         set => SetProperty("_ZWrite", value ? 1f : 0f);
     }
 
+    enum ShadowMode
+    {
+        On, Clip, Dither, Off
+    }
+
+    ShadowMode Shadows
+    {
+        set
+        {
+            if (SetProperty("_Shadows", (float)value))
+            {
+                SetKeyword("_SHADOWS_CLIP", value == ShadowMode.Clip);
+                SetKeyword("_SHADOWS_DITHER", value == ShadowMode.Dither);
+            }
+        }
+    }
+
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)
     {
         base.OnGUI(materialEditor, properties);
@@ -54,9 +71,25 @@ public class CustomShaderGUI : ShaderGUI
         }
     }
 
-    void SetProperty(string name, float value)
+    bool HasProperty(string name) => FindProperty(name, properties, false) != null;
+
+    void SetProperty(string name, string keyword, bool value)
     {
-        FindProperty(name, properties).floatValue = value;
+        if (SetProperty(name, value ? 1f : 0f))
+        {
+            SetKeyword(keyword, value);
+        }
+    }
+
+    bool SetProperty(string name, float value)
+    {
+        MaterialProperty property = FindProperty(name, properties, false);
+        if (property != null)
+        {
+            property.floatValue = value;
+            return true;
+        }
+        return false;
     }
 
     void SetKeyword(string keyword, bool enabled)
@@ -77,14 +110,6 @@ public class CustomShaderGUI : ShaderGUI
         }
     }
 
-    void SetProperty(string name, string keyword, bool value)
-    {
-        if (ShouldSetProperty(name, value ? 1f : 0f))
-        {
-            SetKeyword(keyword, value);
-        }
-    }
-
     bool ShouldSetProperty(string name, float value)
     {
         MaterialProperty property = FindProperty(name, properties, false);
@@ -96,8 +121,7 @@ public class CustomShaderGUI : ShaderGUI
         return false;
     }
 
-    bool HasProperty(string name) =>
-    FindProperty(name, properties, false) != null;
+
 
     RenderQueue RenderQueue
     {
@@ -126,6 +150,7 @@ public class CustomShaderGUI : ShaderGUI
         {
             Clipping = false;
             PremultiplyAlpha = false;
+            Shadows = ShadowMode.On;
             SrcBlend = BlendMode.One;
             DstBlend = BlendMode.Zero;
             ZWrite = true;
@@ -139,6 +164,7 @@ public class CustomShaderGUI : ShaderGUI
         {
             Clipping = true;
             PremultiplyAlpha = false;
+            Shadows = ShadowMode.Clip;
             SrcBlend = BlendMode.One;
             DstBlend = BlendMode.Zero;
             ZWrite = true;
@@ -152,6 +178,7 @@ public class CustomShaderGUI : ShaderGUI
         {
             Clipping = false;
             PremultiplyAlpha = false;
+            Shadows = ShadowMode.Dither;
             SrcBlend = BlendMode.SrcAlpha;
             DstBlend = BlendMode.OneMinusSrcAlpha;
             ZWrite = false;
@@ -165,6 +192,7 @@ public class CustomShaderGUI : ShaderGUI
         {
             Clipping = false;
             PremultiplyAlpha = true;
+            Shadows = ShadowMode.Dither;
             SrcBlend = BlendMode.One;
             DstBlend = BlendMode.OneMinusSrcAlpha;
             ZWrite = false;

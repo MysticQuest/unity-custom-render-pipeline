@@ -8,6 +8,7 @@ Shader "Custom RP/Lit" {
 		// Clips fragments below a set alpha value
 		_Cutoff ("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 		[Toggle(_CLIPPING)] _Clipping ("Alpha Clipping", Float) = 0
+		[KeywordEnum(On, Clip, Dither, Off)] _Shadows ("Shadows", Float) = 0
 		_Metallic ("Metallic", Range(0, 1)) = 0
 		_Smoothness ("Smoothness", Range(0, 1)) = 0.5
 		// Blend modes for transparency
@@ -31,7 +32,7 @@ Shader "Custom RP/Lit" {
 			Blend [_SrcBlend][_DstBlend]
 			ZWrite [_ZWrite]
 			HLSLPROGRAM
-			#pragma shader_feature _CLIPPING
+			#pragma shader_feature _ _SHADOWS_CLIP _SHADOWS_DITHER
 			#pragma shader_feature _PREMULTIPLY_ALPHA
 			// GPU Instancing to batch same mesh objects (putting all properties to arrays for the GPU)
 			#pragma multi_compile _ _DIRECTIONAL_PCF3 _DIRECTIONAL_PCF5 _DIRECTIONAL_PCF7
