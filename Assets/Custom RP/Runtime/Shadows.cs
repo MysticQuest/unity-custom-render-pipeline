@@ -25,6 +25,7 @@ public class Shadows
         cascadeCountId = Shader.PropertyToID("_CascadeCount"),
         cascadeCullingSpheresId = Shader.PropertyToID("_CascadeCullingSpheres"),
         cascadeDataId = Shader.PropertyToID("_CascadeData"),
+        shadowAtlasSizeId = Shader.PropertyToID("_ShadowAtlasSize"),
         shadowDistanceFadeId = Shader.PropertyToID("_ShadowDistanceFade");
 
     // Culling spheres accommodate each cascade
@@ -34,6 +35,12 @@ public class Shadows
 
     static Matrix4x4[]
         dirShadowMatrices = new Matrix4x4[maxShadowedDirectionalLightCount * maxCascades];
+
+    static string[] directionalFilterKeywords = {
+        "_DIRECTIONAL_PCF3",
+        "_DIRECTIONAL_PCF5",
+        "_DIRECTIONAL_PCF7",
+    };
 
     struct ShadowedDirectionalLight
     {
@@ -139,6 +146,11 @@ public class Shadows
                 1f / (1f - f * f)
             )
         );
+        SetKeywords();
+        // Stores atlas size and fragment size
+        buffer.SetGlobalVector(
+            shadowAtlasSizeId, new Vector4(atlasSize, 1f / atlasSize)
+        );
         buffer.EndSample(bufferName);
         ExecuteBuffer();
     }
@@ -220,17 +232,36 @@ public class Shadows
     }
 
     // Each cascade/cullingsphere has a different texel size (e.g. further ones are larger).
-    // This attempts to correct misalignment between texels (shadow atlas pixels)
-    // that can be much larger than fragments (pixels in world view) causing shadow artifacts.
+    // This attempts to correct misalignment between texels (shadow atlas pixels) and fragments,
+    // because texels can be much larger than fragments (pixels in world view) causing shadow artifacts.
+    // Also accounts for the size of the sampler/PCF filter
     void SetCascadeData(int index, Vector4 cullingSphere, float tileSize)
     {
         float texelSize = 2f * cullingSphere.w / tileSize;
+        float filterSize = texelSize * ((float)settings.directional.filter + 1f);
+        cullingSphere.w -= filterSize;
         cullingSphere.w *= cullingSphere.w;
         cascadeCullingSpheres[index] = cullingSphere;
         cascadeData[index] = new Vector4(
             1f / cullingSphere.w,
-            texelSize * 1.4142136f
+            filterSize * 1.4142136f
         );
+    }
+
+    void SetKeywords()
+    {
+        int enabledIndex = (int)settings.directional.filter - 1;
+        for (int i = 0; i < directionalFilterKeywords.Length; i++)
+        {
+            if (i == enabledIndex)
+            {
+                buffer.EnableShaderKeyword(directionalFilterKeywords[i]);
+            }
+            else
+            {
+                buffer.DisableShaderKeyword(directionalFilterKeywords[i]);
+            }
+        }
     }
 
     public void Cleanup()
