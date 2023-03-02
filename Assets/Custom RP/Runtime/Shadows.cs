@@ -171,6 +171,8 @@ public class Shadows
         int tileOffset = index * cascadeCount;
         Vector3 ratios = settings.directional.CascadeRatios;
 
+        float cullingFactor = Mathf.Max(0f, 0.8f - settings.directional.cascadeFade);
+
         for (int i = 0; i < cascadeCount; i++)
         {
             // For each light's cascade,
@@ -182,6 +184,9 @@ public class Shadows
                 out ShadowSplitData splitData
             );
             // splitData contains information about how shadow casters should be culled
+            // shadowCascadeBlendCullingFactor culls a .8f area of a child cascade in the parent cascade,
+            // so that the area of the child cascade doesn't get rendered in both cascades
+            splitData.shadowCascadeBlendCullingFactor = cullingFactor;
             shadowSettings.splitData = splitData;
             if (index == 0)
             {
